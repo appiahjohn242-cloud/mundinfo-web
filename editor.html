@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editor Studio — MUND.info</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#060B14; --card:#0E1728; --card-2:#15223B; --border:rgba(255,255,255,0.08);
+      --text:#F8FAFC; --muted:#94A3B8; --gold:#C4964B; --gold-soft:rgba(196,150,75,0.16);
+      --crimson:#DC2626; --green:#22C55E;
+      --serif:"Playfair Display",Georgia,serif; --sans:"Inter",sans-serif;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:var(--sans); background:radial-gradient(circle at 50% 0%,#142442 0%,var(--bg) 55%); color:var(--text); min-height:100vh; }
+    a { color:inherit; text-decoration:none; }
+
+    .topbar { position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:space-between; gap:0.5rem; padding:0.8rem 0.95rem; background:rgba(6,11,20,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+    .brand-left { display:flex; align-items:center; gap:0.5rem; min-width:0; }
+    .brand-avatar { width:32px; height:32px; border-radius:999px; background:linear-gradient(135deg,#D8AA5E,#875E20); color:#060B14; font-family:var(--serif); font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .wordmark { font-family:var(--serif); font-size:1.18rem; font-weight:700; display:inline-flex; align-items:baseline; white-space:nowrap; }
+    .wordmark em { font-style:italic; font-weight:400; }
+    .diamond { display:inline-block; width:5px; height:5px; background:var(--gold); transform:rotate(45deg); margin:0 3px; position:relative; top:-2px; }
+    .role-pill { font-size:0.64rem; font-weight:700; padding:0.16rem 0.5rem; border-radius:999px; background:var(--gold-soft); color:var(--gold); border:1px solid rgba(196,150,75,0.35); white-space:nowrap; }
+    .nav-right { display:flex; align-items:center; gap:0.75rem; font-size:0.78rem; color:#CBD5E1; white-space:nowrap; flex-shrink:0; }
+    .nav-right a:hover { color:var(--gold); }
+
+    .wrap { max-width:820px; margin:0 auto; padding:1.15rem 0.95rem 3.5rem; }
+    .panel { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:1.15rem; margin-bottom:1rem; }
+    .head-bar { display:flex; justify-content:space-between; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem; }
+    h1 { font-size:1.65rem; font-weight:700; letter-spacing:-0.02em; }
+
+    .seg { display:inline-flex; background:var(--bg); border:1px solid var(--border); border-radius:999px; padding:0.2rem; }
+    .seg button { background:none; border:none; color:var(--muted); padding:0.42rem 1rem; border-radius:999px; font-size:0.8rem; font-weight:600; cursor:pointer; }
+    .seg button.active { background:linear-gradient(135deg,#D8AA5E,#B48438); color:#060B14; }
+
+    .chips { display:flex; gap:0.5rem; overflow-x:auto; padding-bottom:0.25rem; margin-bottom:1rem; scrollbar-width:none; }
+    .chips::-webkit-scrollbar { display:none; }
+    .chip { background:var(--card); color:var(--muted); border:1px solid var(--border); border-radius:999px; padding:0.45rem 0.95rem; font-size:0.8rem; font-weight:600; cursor:pointer; white-space:nowrap; }
+    .chip.active { background:linear-gradient(135deg,#D8AA5E,#B48438); color:#060B14; border-color:transparent; }
+
+    label { display:block; font-size:0.8rem; font-weight:600; color:#E2E8F0; margin:0.9rem 0 0.35rem; }
+    input, select, textarea { width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:14px; padding:0.78rem 0.95rem; font-size:0.92rem; font-family:var(--sans); outline:none; }
+    input:focus, select:focus, textarea:focus { border-color:var(--gold); }
+    textarea { min-height:185px; line-height:1.62; resize:vertical; }
+    .hint { font-size:0.76rem; color:var(--muted); margin-top:0.2rem; margin-bottom:0.4rem; }
+
+    .media-box { background:var(--bg); border:1px solid var(--border); border-radius:16px; padding:0.85rem; margin-top:0.35rem; }
+    .media-preview { width:100%; max-height:220px; object-fit:cover; border-radius:12px; display:none; margin-bottom:0.75rem; border:1px solid var(--border); }
+    .media-actions { display:flex; gap:0.55rem; flex-wrap:wrap; align-items:center; }
+
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:0.4rem; border:none; border-radius:999px; padding:0.7rem 1.25rem; font-size:0.82rem; font-weight:700; cursor:pointer; }
+    .btn-gold { background:linear-gradient(135deg,#D8AA5E,#B48438); color:#060B14; }
+    .btn-dark { background:var(--card-2); color:var(--text); border:1px solid var(--border); }
+    .btn-danger { background:rgba(220,38,38,0.16); color:#FCA5A5; border:1px solid rgba(220,38,38,0.35); }
+    .btn-sm { padding:0.46rem 0.85rem; font-size:0.75rem; }
+    .btn-row { display:flex; flex-wrap:wrap; gap:0.65rem; margin-top:1.15rem; }
+
+    .preview-box { background:var(--bg); border:1px solid var(--border); border-radius:16px; padding:1.1rem; }
+    .preview-box img { width:100%; max-height:240px; object-fit:cover; border-radius:12px; margin-bottom:0.85rem; }
+    .preview-box h2 { font-family:var(--serif); font-size:1.6rem; line-height:1.2; margin:0.4rem 0 0.7rem; }
+    .preview-box p { color:#CBD5E1; margin-bottom:0.85rem; line-height:1.65; }
+
+    .row { display:flex; justify-content:space-between; align-items:center; gap:0.75rem; padding:0.85rem 0; border-bottom:1px solid var(--border); }
+    .row:last-child { border-bottom:none; }
+    .st-pill { font-size:0.64rem; font-weight:700; padding:0.16rem 0.55rem; border-radius:999px; text-transform:uppercase; }
+    .st-pub { background:rgba(34,197,94,0.16); color:#86EFAC; }
+    .st-draft { background:var(--gold-soft); color:var(--gold); }
+    .meta { font-size:0.78rem; color:var(--muted); }
+    .check-row { display:flex; align-items:center; gap:0.6rem; margin-top:0.95rem; font-size:0.86rem; color:#CBD5E1; }
+    .check-row input { width:auto; }
+
+    .pw-wrap { position:relative; display:flex; align-items:center; }
+    .pw-wrap input { padding-right:2.6rem; }
+    .pw-eye { position:absolute; right:0.7rem; background:none; border:none; color:var(--muted); cursor:pointer; display:inline-flex; align-items:center; }
+    .pw-eye svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-left">
+      <div class="brand-avatar">M</div>
+      <a href="index.html" class="wordmark">MUND<span class="diamond"></span><em>info</em></a>
+      <span class="role-pill">Editor</span>
+    </div>
+    <nav class="nav-right">
+      <a href="index.html">Live Site</a>
+      <a href="#" id="logout-btn" style="display:none; color:#FCA5A5;">Sign Out</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="panel" id="auth-card">
+      <h1 id="auth-title" style="font-size:1.5rem; margin-bottom:0.35rem;">Editor Sign In</h1>
+      <p class="meta" style="margin-bottom:0.65rem;">Sign in with your newsroom editor account to write and publish stories.</p>
+      <label>Email</label>
+      <input type="email" id="auth-email" placeholder="editor@mund.info" />
+      <label>Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="auth-pass" placeholder="••••••••" />
+        <button type="button" class="pw-eye" id="toggle-pw" aria-label="Toggle password"></button>
+      </div>
+      <div id="name-wrap" style="display:none;">
+        <label>Byline Name</label>
+        <input type="text" id="auth-name" placeholder="John Appiah" />
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-gold" id="auth-submit-btn">Sign In</button>
+        <button type="button" class="btn btn-dark" id="auth-toggle-btn">Create Editor Account</button>
+      </div>
+      <div class="meta" id="auth-status" style="margin-top:0.65rem;"></div>
+    </section>
+
+    <div id="workspace" style="display:none;">
+      <div class="chips">
+        <button type="button" class="chip active" data-tab="compose">Story Composer</button>
+        <button type="button" class="chip" data-tab="articles">My Stories (<span id="story-count">0</span>)</button>
+        <button type="button" class="chip" data-tab="alerts">Breaking Ticker</button>
+      </div>
+
+      <section class="panel" id="tab-compose">
+        <div class="head-bar">
+          <h1 id="form-heading">New article</h1>
+          <div style="display:flex; gap:0.45rem; align-items:center; flex-wrap:wrap;">
+            <button type="button" class="btn btn-dark btn-sm" id="fill-sample-btn">Fill Sample Template</button>
+            <div class="seg">
+              <button type="button" class="active" id="mode-write">Write</button>
+              <button type="button" id="mode-preview">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="write-pane">
+          <input type="hidden" id="edit-id" />
+          <label>Title</label>
+          <input type="text" id="f-title" placeholder="Clear, authoritative headline..." />
+
+          <label>URL slug</label>
+          <input type="text" id="f-slug" placeholder="/article/global-briefing-update" />
+
+          <label>Section</label>
+          <select id="f-section">
+            <option>World</option><option>Politics</option><option>Business</option>
+            <option>Technology</option><option>Sports</option><option>Entertainment</option>
+            <option>Science</option><option>Lifestyle</option><option>Education</option>
+            <option>Opinion</option><option>Investigations</option>
+          </select>
+
+          <label>Excerpt</label>
+          <textarea id="f-summary" style="min-height:85px;" placeholder="Concise summary for international readers..."></textarea>
+
+          <label>Article content</label>
+          <div class="hint">Leave a blank line between paragraphs.</div>
+          <textarea id="f-body" placeholder="Write the full report here..."></textarea>
+
+          <label>Cover image</label>
+          <div class="media-box">
+            <img id="img-preview" class="media-preview" alt="Cover preview" />
+            <input type="file" id="f-file" accept="image/*" style="display:none;" />
+            <div class="media-actions">
+              <button type="button" class="btn btn-dark btn-sm" id="pick-img-btn">Choose from Gallery / Files</button>
+              <button type="button" class="btn btn-dark btn-sm" id="replace-img-btn" style="display:none;">Replace image</button>
+              <span class="meta" id="img-status">No image selected</span>
+            </div>
+            <input type="url" id="f-img" placeholder="Or paste an image URL (https://...)" style="margin-top:0.65rem;" />
+          </div>
+
+          <label>Author byline &amp; read time</label>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.65rem;">
+            <input type="text" id="f-author" placeholder="Author name" />
+            <input type="text" id="f-read" value="3 min read" />
+          </div>
+
+          <label class="check-row">
+            <input type="checkbox" id="f-inv" />
+            <span>Feature in MUNDINFO INVESTIGATIONS dark band</span>
+          </label>
+        </div>
+
+        <div id="preview-pane" class="preview-box" style="display:none;"></div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-gold" id="publish-btn">Publish Story</button>
+          <button type="button" class="btn btn-dark" id="draft-btn">Save Draft</button>
+          <button type="button" class="btn btn-dark" id="reset-form-btn" style="display:none;">Cancel</button>
+        </div>
+        <div class="meta" id="save-status" style="margin-top:0.65rem;"></div>
+      </section>
+
+      <section class="panel" id="tab-articles" style="display:none;">
+        <h2 style="font-size:1.2rem; margin-bottom:0.6rem;">Newsroom Stories</h2>
+        <div id="articles-list">Loading...</div>
+      </section>
+
+      <section class="panel" id="tab-alerts" style="display:none;">
+        <h2 style="font-size:1.2rem; margin-bottom:0.5rem;">Moving Breaking Ticker</h2>
+        <input type="text" id="alert-text" placeholder="BREAKING: Verified update headline..." />
+        <button type="button" class="btn btn-gold btn-sm" id="add-alert-btn" style="margin-top:0.55rem;">Add to Ticker</button>
+        <div id="alerts-list" style="margin-top:0.85rem;"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/thebase-config.js"></script>
+  <script>
+    const eyeOpen = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    const eyeOff = '<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    const pwInp = document.getElementById("auth-pass");
+    const pwBtn = document.getElementById("toggle-pw");
+    pwBtn.innerHTML = eyeOpen;
+    pwBtn.onclick = () => {
+      const show = pwInp.type === "password";
+      pwInp.type = show ? "text" : "password";
+      pwBtn.innerHTML = show ? eyeOff : eyeOpen;
+    };
+
+    let isRegister = false, currentUser = null, cachedArticles = [], selectedImageData = "";
+    function db() { return getPublicClient(); }
+
+    const fileInp = document.getElementById("f-file");
+    const imgPrev = document.getElementById("img-preview");
+    const imgUrlInp = document.getElementById("f-img");
+    const imgStatus = document.getElementById("img-status");
+    const replaceBtn = document.getElementById("replace-img-btn");
+
+    function setPreviewImage(src, label) {
+      if (src) {
+        imgPrev.src = src;
+        imgPrev.style.display = "block";
+        replaceBtn.style.display = "inline-flex";
+        imgStatus.textContent = label || "Image attached";
+      } else {
+        imgPrev.style.display = "none";
+        replaceBtn.style.display = "none";
+        imgStatus.textContent = "No image selected";
+      }
+    }
+
+    document.getElementById("pick-img-btn").onclick = () => fileInp.click();
+    replaceBtn.onclick = () => fileInp.click();
+    imgUrlInp.oninput = () => {
+      const u = imgUrlInp.value.trim();
+      selectedImageData = "";
+      setPreviewImage(u, u ? "Using image URL" : "No image selected");
+    };
+    fileInp.onchange = () => {
+      const f = fileInp.files && fileInp.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const maxW = 900;
+          const scale = img.width > maxW ? maxW / img.width : 1;
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+          selectedImageData = canvas.toDataURL("image/jpeg", 0.78);
+          imgUrlInp.value = "";
+          setPreviewImage(selectedImageData, f.name);
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(f);
+    };
+
+    document.getElementById("mode-write").onclick = () => {
+      document.getElementById("mode-write").classList.add("active");
+      document.getElementById("mode-preview").classList.remove("active");
+      document.getElementById("write-pane").style.display = "block";
+      document.getElementById("preview-pane").style.display = "none";
+    };
+    document.getElementById("mode-preview").onclick = () => {
+      document.getElementById("mode-preview").classList.add("active");
+      document.getElementById("mode-write").classList.remove("active");
+      document.getElementById("write-pane").style.display = "none";
+      const p = document.getElementById("preview-pane");
+      p.style.display = "block";
+      const paras = (document.getElementById("f-body").value || "").split(/\n\s*\n/).filter(Boolean);
+      const cover = selectedImageData || imgUrlInp.value.trim();
+      p.innerHTML = (cover ? '<img src="' + cover + '" alt="" />' : '') +
+        '<span class="st-pill st-draft">' + document.getElementById("f-section").value + '</span>' +
+        '<h2>' + (document.getElementById("f-title").value || "Untitled Headline") + '</h2>' +
+        '<p style="color:#94A3B8;">' + (document.getElementById("f-summary").value || "") + '</p>' +
+        (paras.length ? paras.map(x => '<p>' + x + '</p>').join("") : '<p class="meta">Nothing written yet.</p>');
+    };
+
+    document.getElementById("fill-sample-btn").onclick = () => {
+      document.getElementById("f-title").value = "West Africa Clean Grid Corridor Gains New Regional Backing";
+      document.getElementById("f-slug").value = "/article/west-africa-clean-grid-corridor";
+      document.getElementById("f-section").value = "Business";
+      document.getElementById("f-summary").value = "Energy planners and regional utilities outline cross-border transmission upgrades to cut power losses and expand renewable capacity.";
+      document.getElementById("f-body").value = "Regional energy officials meeting in Accra this week reviewed technical milestones for a cross-border high-voltage transmission link designed to balance solar and hydro generation across neighboring grids.\n\nGrid operators noted that reducing line losses and improving storage dispatch will lower industrial power costs while keeping household tariffs predictable during peak evening demand.\n\nImplementation teams will publish quarterly grid-reliability metrics ahead of the next financing review.";
+      if (!imgUrlInp.value.trim() && !selectedImageData) {
+        imgUrlInp.value = "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1000&q=80";
+        setPreviewImage(imgUrlInp.value, "Sample cover URL");
+      }
+      if (!document.getElementById("f-author").value.trim()) {
+        document.getElementById("f-author").value = "John Appiah";
+      }
+      document.getElementById("f-read").value = "4 min read";
+      document.getElementById("save-status").textContent = "Sample template loaded — edit any field before publishing.";
+    };
+
+    async function checkSession() {
+      const { data } = await db().auth.getUser();
+      if (data && data.user) {
+        currentUser = data.user;
+        document.getElementById("auth-card").style.display = "none";
+        document.getElementById("workspace").style.display = "block";
+        document.getElementById("logout-btn").style.display = "inline";
+        document.getElementById("f-author").value = (currentUser.metadata && currentUser.metadata.name) || currentUser.email.split("@")[0];
+        loadArticles();
+        loadAlerts();
+      } else {
+        document.getElementById("auth-card").style.display = "block";
+        document.getElementById("workspace").style.display = "none";
+      }
+    }
+
+    document.getElementById("auth-toggle-btn").onclick = () => {
+      isRegister = !isRegister;
+      document.getElementById("auth-title").textContent = isRegister ? "Create Editor Account" : "Editor Sign In";
+      document.getElementById("auth-submit-btn").textContent = isRegister ? "Create Account" : "Sign In";
+      document.getElementById("auth-toggle-btn").textContent = isRegister ? "Already have an account? Sign In" : "Create Editor Account";
+      document.getElementById("name-wrap").style.display = isRegister ? "block" : "none";
+      document.getElementById("auth-status").textContent = "";
+    };
+
+    document.getElementById("auth-submit-btn").onclick = async () => {
+      const email = document.getElementById("auth-email").value.trim();
+      const password = document.getElementById("auth-pass").value;
+      const name = document.getElementById("auth-name").value.trim();
+      const st = document.getElementById("auth-status");
+      if (!email || !password) {
+        st.textContent = "Please enter both email and password.";
+        return;
+      }
+      st.textContent = isRegister ? "Creating editor account..." : "Signing in...";
+      const res = isRegister
+        ? await db().auth.signUp({ email, password, metadata: { name: name || email.split("@")[0], role: "editor" } })
+        : await db().auth.signIn({ email, password });
+      if (res.error) {
+        st.textContent = "Sign in failed: " + res.error;
+        return;
+      }
+      st.textContent = "";
+      await checkSession();
+    };
+
+    document.getElementById("logout-btn").onclick = (e) => {
+      e.preventDefault();
+      db().auth.signOut();
+      location.reload();
+    };
+
+    document.querySelectorAll(".chip[data-tab]").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".chip[data-tab]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        ["compose","articles","alerts"].forEach(t => {
+          document.getElementById("tab-" + t).style.display = btn.dataset.tab === t ? "block" : "none";
+        });
+      };
+    });
+
+    async function saveStory(status) {
+      const st = document.getElementById("save-status");
+      const editId = document.getElementById("edit-id").value;
+      const title = document.getElementById("f-title").value.trim();
+      const bodyRaw = document.getElementById("f-body").value.trim();
+      if (!title || !bodyRaw) {
+        st.textContent = "Title and article content are required.";
+        return;
+      }
+      const slug = document.getElementById("f-slug").value.trim() || ("/article/" + title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""));
+      const finalImg = selectedImageData || imgUrlInp.value.trim() || "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1000&q=80";
+      const payload = {
+        section: document.getElementById("f-section").value,
+        title,
+        slug,
+        summary: document.getElementById("f-summary").value.trim() || bodyRaw.slice(0, 140) + "...",
+        body: bodyRaw.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean),
+        author: document.getElementById("f-author").value.trim() || "MUND.info Desk",
+        read_time: document.getElementById("f-read").value.trim() || "3 min read",
+        image_url: finalImg,
+        is_investigation: document.getElementById("f-inv").checked,
+        status,
+        updated_at: new Date().toISOString()
+      };
+      st.textContent = "Saving...";
+      const res = editId
+        ? await db().from("articles").eq("id", editId).update(payload)
+        : await db().from("articles").insert({ ...payload, created_at: new Date().toISOString() });
+      if (res.error) {
+        st.textContent = "Error: " + res.error;
+        return;
+      }
+      st.textContent = status === "published" ? "Published live!" : "Saved as draft.";
+      resetForm();
+      loadArticles();
+    }
+
+    function resetForm() {
+      document.getElementById("edit-id").value = "";
+      document.getElementById("form-heading").textContent = "New article";
+      ["f-title","f-slug","f-summary","f-body","f-img"].forEach(id => document.getElementById(id).value = "");
+      fileInp.value = "";
+      selectedImageData = "";
+      setPreviewImage("", "");
+      document.getElementById("f-inv").checked = false;
+      document.getElementById("reset-form-btn").style.display = "none";
+    }
+
+    document.getElementById("publish-btn").onclick = () => saveStory("published");
+    document.getElementById("draft-btn").onclick = () => saveStory("draft");
+    document.getElementById("reset-form-btn").onclick = resetForm;
+
+    async function loadArticles() {
+      const { data } = await db().from("articles").order("created_at", { ascending: false }).select();
+      cachedArticles = Array.isArray(data) ? data : [];
+      document.getElementById("story-count").textContent = cachedArticles.length;
+      document.getElementById("articles-list").innerHTML = cachedArticles.length ? cachedArticles.map(a =>
+        '<div class="row">' +
+          '<div>' +
+            '<span class="st-pill ' + (a.status === "published" ? "st-pub" : "st-draft") + '">' + (a.status || "draft") + '</span>' +
+            '<div style="font-weight:700; margin-top:0.25rem;">' + a.title + '</div>' +
+            '<div class="meta">' + (a.section || "World") + ' &middot; ' + (a.author || "") + '</div>' +
+          '</div>' +
+          '<button type="button" class="btn btn-dark btn-sm" onclick="editArticle(\'' + a.id + '\')">Edit</button>' +
+        '</div>'
+      ).join("") : '<div class="meta">No stories yet.</div>';
+    }
+
+    window.editArticle = (id) => {
+      const a = cachedArticles.find(x => String(x.id) === String(id));
+      if (!a) return;
+      document.getElementById("edit-id").value = a.id;
+      document.getElementById("form-heading").textContent = "Edit article";
+      document.getElementById("f-title").value = a.title || "";
+      document.getElementById("f-slug").value = a.slug || "";
+      document.getElementById("f-section").value = a.section || "World";
+      document.getElementById("f-summary").value = a.summary || "";
+      selectedImageData = (a.image_url && a.image_url.startsWith("data:")) ? a.image_url : "";
+      imgUrlInp.value = selectedImageData ? "" : (a.image_url || "");
+      setPreviewImage(a.image_url || "", selectedImageData ? "Saved gallery photo" : "Current cover");
+      document.getElementById("f-author").value = a.author || "";
+      document.getElementById("f-read").value = a.read_time || "3 min read";
+      document.getElementById("f-body").value = Array.isArray(a.body) ? a.body.join("\n\n") : (a.body || "");
+      document.getElementById("f-inv").checked = !!a.is_investigation;
+      document.getElementById("reset-form-btn").style.display = "inline-flex";
+      document.querySelector('.chip[data-tab="compose"]').click();
+    };
+
+    async function loadAlerts() {
+      const { data } = await db().from("alerts").order("created_at", { ascending: false }).select();
+      const rows = Array.isArray(data) ? data : [];
+      document.getElementById("alerts-list").innerHTML = rows.length ? rows.map(al =>
+        '<div class="row">' +
+          '<div><span class="st-pill ' + (al.is_active ? "st-pub" : "st-draft") + '">' + (al.is_active ? "LIVE" : "PAUSED") + '</span><div style="margin-top:0.25rem;">' + al.message + '</div></div>' +
+          '<div style="display:flex; gap:0.4rem;">' +
+            '<button type="button" class="btn btn-dark btn-sm" onclick="toggleAlert(\'' + al.id + '\',' + (!al.is_active) + ')">' + (al.is_active ? "Pause" : "Activate") + '</button>' +
+            '<button type="button" class="btn btn-danger btn-sm" onclick="delAlert(\'' + al.id + '\')">Delete</button>' +
+          '</div>' +
+        '</div>'
+      ).join("") : '<div class="meta">No alerts yet.</div>';
+    }
+
+    document.getElementById("add-alert-btn").onclick = async () => {
+      const msg = document.getElementById("alert-text").value.trim();
+      if (!msg) return;
+      await db().from("alerts").insert({ message: msg, is_active: true, created_at: new Date().toISOString() });
+      document.getElementById("alert-text").value = "";
+      loadAlerts();
+    };
+    window.toggleAlert = async (id, next) => { await db().from("alerts").eq("id", id).update({ is_active: next }); loadAlerts(); };
+    window.delAlert = async (id) => { await db().from("alerts").eq("id", id).delete(); loadAlerts(); };
+
+    checkSession();
+  </script>
+</body>
+</html>

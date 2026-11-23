@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Studio — MUND.info</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#070C15; --card:#0F172A; --card-2:#142038; --border:rgba(255,255,255,0.09);
+      --text:#F8FAFC; --muted:#94A3B8; --gold:#C4964B; --gold-soft:rgba(196,150,75,0.16);
+      --crimson:#DC2626; --green:#22C55E;
+      --serif:"Playfair Display",Georgia,serif; --sans:"Inter",sans-serif;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:var(--sans); background:radial-gradient(circle at top,#13223D 0%,var(--bg) 52%); color:var(--text); min-height:100vh; }
+    a { color:inherit; text-decoration:none; }
+    .topbar { position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:space-between; padding:0.85rem 1.05rem; background:rgba(7,12,21,0.9); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+    .brand-left { display:flex; align-items:center; gap:0.55rem; }
+    .brand-avatar { width:34px; height:34px; border-radius:999px; background:linear-gradient(135deg,var(--gold),#7C5821); color:var(--bg); font-family:var(--serif); font-weight:700; display:flex; align-items:center; justify-content:center; font-size:0.95rem; }
+    .wordmark { font-family:var(--serif); font-size:1.25rem; font-weight:700; display:inline-flex; align-items:baseline; }
+    .wordmark em { font-style:italic; font-weight:400; }
+    .diamond { display:inline-block; width:5px; height:5px; background:var(--gold); transform:rotate(45deg); margin:0 4px; position:relative; top:-2px; }
+    .role-pill { font-size:0.66rem; font-weight:600; padding:0.18rem 0.55rem; border-radius:999px; background:var(--gold-soft); color:var(--gold); border:1px solid rgba(196,150,75,0.35); }
+    .nav-right { display:flex; align-items:center; gap:0.85rem; font-size:0.82rem; color:#CBD5E1; white-space:nowrap; }
+    .nav-right a:hover { color:var(--gold); }
+
+    .wrap { max-width:940px; margin:0 auto; padding:1.25rem 1rem 3.5rem; }
+    .hero-row { display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap; margin-bottom:1.15rem; }
+    h1 { font-size:1.75rem; font-weight:700; letter-spacing:-0.02em; }
+    .sub { color:var(--muted); font-size:0.9rem; margin-top:0.2rem; }
+
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:0.4rem; border:none; border-radius:999px; padding:0.65rem 1.15rem; font-size:0.82rem; font-weight:600; cursor:pointer; transition:transform 0.15s ease, opacity 0.15s ease; }
+    .btn:active { transform:scale(0.98); }
+    .btn-gold { background:linear-gradient(135deg,#D6A85C,#B58539); color:#090E17; }
+    .btn-dark { background:var(--card-2); color:var(--text); border:1px solid var(--border); }
+    .btn-danger { background:rgba(220,38,38,0.16); color:#FCA5A5; border:1px solid rgba(220,38,38,0.35); }
+    .btn-sm { padding:0.42rem 0.8rem; font-size:0.75rem; }
+
+    .stats { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1.15rem; }
+    .stat { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.05rem; }
+    .stat.featured { background:linear-gradient(135deg,#C99A4E 0%,#8E6424 100%); color:#090E17; border:none; }
+    .stat-lbl { font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; opacity:0.8; margin-bottom:0.45rem; }
+    .stat-val { font-size:1.95rem; font-weight:700; line-height:1; }
+
+    .filters { display:flex; gap:0.5rem; overflow-x:auto; padding-bottom:0.35rem; margin-bottom:1rem; scrollbar-width:none; }
+    .filters::-webkit-scrollbar { display:none; }
+    .chip { background:var(--card); color:var(--muted); border:1px solid var(--border); border-radius:999px; padding:0.45rem 0.95rem; font-size:0.8rem; font-weight:600; cursor:pointer; white-space:nowrap; }
+    .chip.active { background:var(--gold); color:#090E17; border-color:transparent; }
+
+    .panel { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:1.15rem; margin-bottom:1rem; }
+    .panel-title { font-size:1rem; font-weight:700; margin-bottom:0.75rem; display:flex; justify-content:space-between; align-items:center; }
+
+    .article-card { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:1rem; margin-bottom:0.85rem; display:flex; flex-direction:column; gap:0.75rem; }
+    .article-top { display:flex; gap:0.85rem; align-items:center; }
+    .thumb { width:68px; height:68px; border-radius:12px; object-fit:cover; flex-shrink:0; background:var(--card-2); }
+    .st-pill { display:inline-block; font-size:0.64rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.18rem 0.55rem; border-radius:999px; margin-bottom:0.3rem; }
+    .st-pub { background:rgba(34,197,94,0.16); color:#86EFAC; }
+    .st-draft { background:var(--gold-soft); color:var(--gold); }
+    .meta-line { font-size:0.76rem; color:var(--muted); }
+    .art-title { font-size:1.05rem; font-weight:700; line-height:1.3; margin-top:0.15rem; }
+    .actions-bar { display:flex; align-items:center; justify-content:space-between; gap:0.5rem; padding-top:0.65rem; border-top:1px solid var(--border); }
+    .actions-left { display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap; }
+
+    input { width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:0.75rem 0.9rem; font-size:0.92rem; margin-bottom:0.7rem; outline:none; }
+    input:focus { border-color:var(--gold); }
+    .list-row { display:flex; justify-content:space-between; align-items:center; gap:0.75rem; padding:0.75rem 0; border-bottom:1px solid var(--border); }
+    .list-row:last-child { border-bottom:none; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-left">
+      <div class="brand-avatar">M</div>
+      <a href="index.html" class="wordmark">MUND<span class="diamond"></span><em>info</em></a>
+      <span class="role-pill">Admin</span>
+    </div>
+    <nav class="nav-right">
+      <a href="index.html">Site</a>
+      <a href="editor.html">Editor</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <div class="panel" id="admin-gate">
+      <div class="panel-title">Unlock Admin Studio</div>
+      <p class="sub" style="margin-bottom:0.85rem;">Paste your project <strong>LIVE</strong> key (<code>tb_live_...</code>) from TheBase Studio. Stored locally in your browser.</p>
+      <input type="password" id="srv-key" placeholder="tb_live_..." />
+      <input type="password" id="pub-key" placeholder="Optional: tb_anon_... (for public front-page sync)" />
+      <button class="btn btn-gold" id="unlock-admin" style="width:100%;">Unlock Admin Studio</button>
+      <div id="gate-msg" class="meta-line" style="color:#FCA5A5; margin-top:0.55rem;"></div>
+    </div>
+
+    <div id="admin-panel" style="display:none;">
+      <div class="hero-row">
+        <div>
+          <h1>Articles &amp; Newsroom</h1>
+          <div class="sub">Manage everything published on MUND.info.</div>
+        </div>
+        <a href="editor.html" class="btn btn-gold">+ New article</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat featured"><div class="stat-lbl">TOTAL ARTICLES</div><div class="stat-val" id="st-total">0</div></div>
+        <div class="stat"><div class="stat-lbl">PUBLISHED</div><div class="stat-val" id="st-pub">0</div></div>
+        <div class="stat"><div class="stat-lbl">DRAFTS</div><div class="stat-val" id="st-draft">0</div></div>
+        <div class="stat"><div class="stat-lbl">USERS / SUBS</div><div class="stat-val" id="st-users">0</div></div>
+      </div>
+
+      <div class="filters" id="filter-chips">
+        <button class="chip active" data-f="all">All</button>
+        <button class="chip" data-f="published">Published</button>
+        <button class="chip" data-f="draft">Draft</button>
+        <button class="chip" data-f="team">Team &amp; Subs</button>
+      </div>
+
+      <div id="stories-view">
+        <div id="admin-articles"></div>
+      </div>
+
+      <div id="team-view" style="display:none;">
+        <div class="panel">
+          <div class="panel-title">Table Rules <button class="btn btn-gold btn-sm" id="init-rules-btn">Apply Rules</button></div>
+          <div class="meta-line" id="rules-msg">Sets articles &amp; alerts to public_read_admin_write and subscribers to public.</div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Registered Editors &amp; Users</div>
+          <div id="admin-users"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Newsletter Subscribers (<span id="st-subs">0</span>)</div>
+          <div id="admin-subs"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/thebase-config.js"></script>
+  <script>
+    let allArticles = [];
+    let activeFilter = "all";
+    function adm() { return getAdminClient(); }
+
+    document.querySelectorAll(".chip").forEach(ch => {
+      ch.onclick = () => {
+        document.querySelectorAll(".chip").forEach(x => x.classList.remove("active"));
+        ch.classList.add("active");
+        activeFilter = ch.dataset.f;
+        const isTeam = activeFilter === "team";
+        document.getElementById("stories-view").style.display = isTeam ? "none" : "block";
+        document.getElementById("team-view").style.display = isTeam ? "block" : "none";
+        if (!isTeam) renderArticlesList();
+      };
+    });
+
+    document.getElementById("unlock-admin").onclick = async () => {
+      const sk = document.getElementById("srv-key").value.trim();
+      const ak = document.getElementById("pub-key").value.trim();
+      if (!sk) return;
+      if (sk.startsWith("tb_anon_")) { document.getElementById("gate-msg").textContent = "Paste your LIVE key (tb_live_...) in the top box."; return; }
+      saveKeys({ serviceKey: sk, ...(ak ? { anonKey: ak } : {}) });
+      const res = await adm().request("/api/_meta/tables");
+      if (res.error) { document.getElementById("gate-msg").textContent = "Access denied: " + res.error; return; }
+      document.getElementById("admin-gate").style.display = "none";
+      document.getElementById("admin-panel").style.display = "block";
+      refreshAll();
+    };
+
+    document.getElementById("init-rules-btn").onclick = async () => {
+      await adm().request("/api/_meta/rules", { method: "POST", body: JSON.stringify({ table: "articles", rule: "public_read_admin_write" }) });
+      await adm().request("/api/_meta/rules", { method: "POST", body: JSON.stringify({ table: "alerts", rule: "public_read_admin_write" }) });
+      await adm().request("/api/_meta/rules", { method: "POST", body: JSON.stringify({ table: "subscribers", rule: "public" }) });
+      document.getElementById("rules-msg").textContent = "Table security rules applied on TheBase.";
+    };
+
+    function renderArticlesList() {
+      const list = activeFilter === "all" ? allArticles : allArticles.filter(a => (a.status || "draft") === activeFilter);
+      const box = document.getElementById("admin-articles");
+      if (!list.length) {
+        box.innerHTML = `<div class="panel"><div class="meta-line">No articles in this filter yet. Tap <strong>+ New article</strong> to create one.</div></div>`;
+        return;
+      }
+      box.innerHTML = list.map(a => `
+        <article class="article-card">
+          <div class="article-top">
+            <img class="thumb" src="${a.image_url || "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=400&q=70"}" alt="" />
+            <div style="flex:1; min-width:0;">
+              <span class="st-pill ${a.status === "published" ? "st-pub" : "st-draft"}">${(a.status || "draft").toUpperCase()}</span>
+              <div class="meta-line">${a.section || "World"} &middot; ${a.created_at ? new Date(a.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}) : "Today"} &middot; ${a.author || "Desk"}</div>
+              <div class="art-title">${a.title}</div>
+            </div>
+          </div>
+          <div class="actions-bar">
+            <div class="actions-left">
+              <a href="index.html" class="btn btn-dark btn-sm">View</a>
+              <button class="btn btn-dark btn-sm" onclick="setStatus('${a.id}','${a.status === "published" ? "draft" : "published"}')">${a.status === "published" ? "Unpublish" : "Publish"}</button>
+              <a href="editor.html" class="btn btn-dark btn-sm">Edit</a>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="delStory('${a.id}')">Delete</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    async function refreshAll() {
+      const [artRes, usrRes, subRes] = await Promise.all([
+        adm().from("articles").order("created_at", { ascending: false }).select(),
+        adm().request("/api/_auth/users"),
+        adm().from("subscribers").order("created_at", { ascending: false }).select()
+      ]);
+      allArticles = Array.isArray(artRes.data) ? artRes.data : [];
+      const users = Array.isArray(usrRes.data) ? usrRes.data : (usrRes.data?.users || []);
+      const subs = Array.isArray(subRes.data) ? subRes.data : [];
+
+      const pubCount = allArticles.filter(a => a.status === "published").length;
+      document.getElementById("st-total").textContent = allArticles.length;
+      document.getElementById("st-pub").textContent = pubCount;
+      document.getElementById("st-draft").textContent = allArticles.length - pubCount;
+      document.getElementById("st-users").textContent = users.length + subs.length;
+      document.getElementById("st-subs").textContent = subs.length;
+
+      renderArticlesList();
+
+      document.getElementById("admin-users").innerHTML = users.map(u => `
+        <div class="list-row">
+          <div><strong>${u.email}</strong><div class="meta-line">${(u.metadata && u.metadata.name) || "Editor"} &middot; ${u.id}</div></div>
+          <button class="btn btn-danger btn-sm" onclick="delUser('${u.id}')">Remove</button>
+        </div>
+      `).join("") || `<div class="meta-line">No registered users yet.</div>`;
+
+      document.getElementById("admin-subs").innerHTML = subs.map(s => `
+        <div class="list-row"><span>${s.email}</span><span class="meta-line">${s.created_at ? new Date(s.created_at).toLocaleDateString() : ""}</span></div>
+      `).join("") || `<div class="meta-line">No newsletter subscribers yet.</div>`;
+    }
+
+    window.setStatus = async (id, status) => { await adm().from("articles").eq("id", id).update({ status }); refreshAll(); };
+    window.delStory = async (id) => { await adm().from("articles").eq("id", id).delete(); refreshAll(); };
+    window.delUser = async (id) => { await adm().request("/api/_auth/users/" + encodeURIComponent(id), { method: "DELETE" }); refreshAll(); };
+
+    if (getServiceKey()) {
+      document.getElementById("srv-key").value = getServiceKey();
+      document.getElementById("unlock-admin").click();
+    }
+  </script>
+
+<style>
+  .pw-wrap { position: relative; display: flex; align-items: center; }
+  .pw-wrap input { padding-right: 2.6rem !important; margin-bottom: 0 !important; }
+  .pw-eye { position: absolute; right: 0.65rem; background: none; border: none; color: #94A3B8; cursor: pointer; display: inline-flex; align-items: center; }
+  .pw-eye svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const eyeOpen = `<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+    const eyeOff = `<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+    document.querySelectorAll("input[type=password]").forEach(inp => {
+      const wrap = document.createElement("div");
+      wrap.className = "pw-wrap";
+      if (inp.id === "srv-key") wrap.style.marginBottom = "0.7rem";
+      inp.parentNode.insertBefore(wrap, inp);
+      wrap.appendChild(inp);
+      const btn = document.createElement("button");
+      btn.type = "button"; btn.className = "pw-eye"; btn.innerHTML = eyeOpen;
+      btn.onclick = () => { const show = inp.type === "password"; inp.type = show ? "text" : "password"; btn.innerHTML = show ? eyeOff : eyeOpen; };
+      wrap.appendChild(btn);
+    });
+  });
+</script>
+</body>
+</html>

@@ -167,10 +167,36 @@
     .modal-body p { margin-bottom: 1rem; font-size: 1rem; line-height: 1.7; }
     .search-input { width: 100%; border: 1px solid var(--border); padding: 0.85rem 0.95rem; font-size: 1rem; font-family: var(--sans); margin-bottom: 1rem; outline: none; }
     .search-input:focus { border-color: var(--navy); }
-  </style>
+  
+    .date-strip { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 1.25rem; }
+    .masthead { max-width: 1180px; margin: 0 auto; padding: 1.15rem 1.25rem; }
+    .mast-right { display: flex; align-items: center; gap: 0.65rem; }
+    .nl-top-btn { background: var(--navy); color: #fff; border: none; padding: 0.48rem 0.85rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+    .nl-top-btn:hover { background: var(--gold); color: var(--navy); }
+    .wrap { max-width: 1180px; }
+    .hero-summary { font-size: 1.02rem; color: var(--muted); line-height: 1.55; margin-bottom: 0.65rem; }
+    .feed-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+    .feed-thumb { width: 120px; height: 82px; object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); }
+    @media (min-width: 900px) {
+      .broadsheet-grid { display: grid; grid-template-columns: 1.75fr 1fr; gap: 2.25rem; align-items: start; }
+      .broadsheet-side { border-left: 1px solid var(--border); padding-left: 2rem; }
+      .hero-img { height: 420px; object-fit: cover; width: 100%; }
+      .hero-headline { font-size: 2.25rem; }
+      .inv-inner { max-width: 1180px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 2rem; align-items: center; }
+      .inv-img { height: 340px; object-fit: cover; width: 100%; }
+      .newsletter-inner { max-width: 1180px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: center; }
+      .footer-inner { max-width: 1180px; }
+      .footer-cols { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .ed-loc { display: none; }
+      .nl-top-btn { display: none; }
+      .feed-thumb { width: 92px; height: 68px; }
+    }
+</style>
 </head>
 <body>
-  <div class="date-strip" id="date-strip">THURSDAY, 5 NOVEMBER 2026</div>
+  <div class="date-strip" id="date-strip"><span>THURSDAY, 5 NOVEMBER 2026</span><span class="ed-loc">INTERNATIONAL EDITION &middot; ACCRA</span></div>
 
   <header class="masthead">
     <button class="icon-btn" id="open-menu" aria-label="Open menu">
@@ -180,9 +206,10 @@
       <div class="wordmark">MUND<span class="diamond"></span><em>info</em></div>
       <div class="brand-tag">THE WORLD. IN FOCUS.</div>
     </div>
-    <button class="icon-btn" id="open-search" aria-label="Search">
+    <div class="mast-right"><button class="icon-btn" id="open-search" aria-label="Search">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.2" y2="16.2"/></svg>
     </button>
+  <button class="nl-top-btn" onclick="document.querySelector('.newsletter-band').scrollIntoView({behavior:'smooth'})">NEWSLETTER</button></div>
   </header>
 
   <nav class="cat-bar" id="cat-bar"></nav>
@@ -282,6 +309,7 @@
     </div>
   </div>
 
+  <script src="js/thebase-config.js"></script>
   <script>
     const SECTIONS = ["World","Politics","Business","Technology","Sports","Entertainment","Science","Lifestyle","Education","Opinion","Investigations"];
     const SECTION_DESC = {
@@ -314,6 +342,7 @@
     ];
 
     let activeCat = null; // null = Front Page, string = Dedicated Section View
+    let isLiveData = false;
 
     function renderMarquee() {
       const doubled = [...ALERTS, ...ALERTS];
@@ -323,7 +352,7 @@
     }
 
     function openStory(s) {
-      document.getElementById("m-kicker").textContent = `${s.cat.toUpperCase()} · DEMO`;
+      document.getElementById("m-kicker").textContent = isLiveData ? s.cat.toUpperCase() : `${s.cat.toUpperCase()} · DEMO`;
       document.getElementById("m-title").textContent = s.title;
       document.getElementById("m-meta").innerHTML = `<strong>${s.author}</strong> · ${s.date} · ${s.read}`;
       document.getElementById("m-img").src = s.img;
@@ -344,7 +373,7 @@
 
       const slot = document.getElementById("section-header-slot");
       const previewBox = document.getElementById("preview-box");
-      if (activeCat) {
+      if (activeCat || isLiveData) {
         previewBox.style.display = "none";
         slot.innerHTML = `
           <div class="section-banner">
@@ -359,10 +388,12 @@
       }
 
       const lead = activeCat ? (STORIES.find(s => s.cat === activeCat) || STORIES[0]) : STORIES[0];
+      const demoBadge = isLiveData ? "" : `<span class="demo-pill">DEMO</span>`;
       document.getElementById("lead-block").innerHTML = `
         <img class="hero-img" src="${lead.img}" alt="${lead.title}" />
-        <div class="tag-row"><span class="section-kicker">${lead.cat.toUpperCase()}</span><span class="demo-pill">DEMO</span></div>
+        <div class="tag-row"><span class="section-kicker">${lead.cat.toUpperCase()}</span>${demoBadge}</div>
         <h2 class="hero-headline" id="lead-click">${lead.title}</h2>
+        <p class="hero-summary">${lead.summary || (lead.body && lead.body[0]) || ""}</p>
         <div class="byline"><strong>${lead.author}</strong> &middot; ${lead.date} &middot; ${lead.read}</div>
       `;
       document.getElementById("lead-click").onclick = () => openStory(lead);
@@ -373,29 +404,37 @@
           <div><div class="latest-title">${s.title}</div><div class="latest-date">${s.date}</div></div>
         </div>
       `).join("");
-      document.querySelectorAll(".latest-item").forEach(el => { el.onclick = () => openStory(STORIES.find(x => x.id === Number(el.dataset.id))); });
+      document.querySelectorAll(".latest-item").forEach(el => { el.onclick = () => openStory(STORIES.find(x => String(x.id) === String(el.dataset.id))); });
 
-      const inv = STORIES[7];
+      const inv = STORIES.find(s => s.is_investigation || s.cat === "Investigations") || STORIES[STORIES.length - 1] || STORIES[0];
+      const invSide = STORIES.filter(s => String(s.id) !== String(inv.id)).slice(0, 3);
       document.getElementById("inv-band").innerHTML = `
         <div class="inv-inner">
           <img class="inv-img" src="${inv.img}" alt="${inv.title}" />
-          <div class="inv-kicker">MUNDINFO INVESTIGATIONS &middot; DEMO</div>
-          <h2 class="inv-headline" id="inv-click">${inv.title}</h2>
-          <p class="inv-summary">${inv.summary}</p>
-          ${STORIES.slice(2, 5).map(x => `<div class="inv-list-item" data-id="${x.id}">${x.title}</div>`).join("")}
+          <div>
+            <div class="inv-kicker">${isLiveData ? "MUNDINFO INVESTIGATIONS" : "MUNDINFO INVESTIGATIONS &middot; DEMO"}</div>
+            <h2 class="inv-headline" id="inv-click">${inv.title}</h2>
+            <p class="inv-summary">${inv.summary || (inv.body && inv.body[0]) || ""}</p>
+            ${invSide.map(x => `<div class="inv-list-item" data-id="${x.id}">${x.title}</div>`).join("")}
+          </div>
         </div>
       `;
       document.getElementById("inv-click").onclick = () => openStory(inv);
-      document.querySelectorAll(".inv-list-item").forEach(el => { el.onclick = () => openStory(STORIES.find(x => x.id === Number(el.dataset.id))); });
+      document.querySelectorAll(".inv-list-item").forEach(el => { el.onclick = () => openStory(STORIES.find(x => String(x.id) === String(el.dataset.id))); });
 
-      document.getElementById("more-list").innerHTML = STORIES.slice(4, 7).map(s => `
+      const feedSource = activeCat ? STORIES.filter(s => s.cat === activeCat) : STORIES.slice(1);
+      document.getElementById("more-list").innerHTML = feedSource.map(s => `
         <div class="feed-item" data-id="${s.id}">
-          <div class="tag-row"><span class="section-kicker">${s.cat.toUpperCase()}</span><span class="demo-pill">DEMO</span></div>
-          <div class="feed-title">${s.title}</div>
-          <div class="latest-date">${s.date}</div>
+          <div style="flex:1; min-width:0;">
+            <div class="tag-row"><span class="section-kicker">${s.cat.toUpperCase()}</span>${demoBadge}</div>
+            <div class="feed-title">${s.title}</div>
+            <p style="font-size:0.88rem; color:var(--muted); margin:0.25rem 0 0.35rem;">${s.summary || (s.body && s.body[0]) || ""}</p>
+            <div class="latest-date">${s.author} &middot; ${s.date} &middot; ${s.read}</div>
+          </div>
+          <img class="feed-thumb" src="${s.img}" alt="" />
         </div>
       `).join("");
-      document.querySelectorAll(".feed-item").forEach(el => { el.onclick = () => openStory(STORIES.find(x => x.id === Number(el.dataset.id))); });
+      document.querySelectorAll(".feed-item").forEach(el => { el.onclick = () => openStory(STORIES.find(x => String(x.id) === String(el.dataset.id))); });
 
       document.getElementById("f-sec-1").innerHTML = SECTIONS.slice(0, 6).map(s => `<li><a href="#" data-fcat="${s}">${s}</a></li>`).join("");
       document.getElementById("f-sec-2").innerHTML = SECTIONS.slice(6).map(s => `<li><a href="#" data-fcat="${s}">${s}</a></li>`).join("");
@@ -404,6 +443,7 @@
       document.getElementById("drawer-items").innerHTML = SECTIONS.map(s =>
         `<button class="drawer-item ${activeCat === s ? "active" : ""}" data-cat="${s}">${s}</button>`
       ).join("");
+      document.getElementById("drawer-items").innerHTML += `<div style="margin-top:1.5rem; display:flex; gap:1rem; font-size:0.85rem; color:#B58B45;"><a href="editor.html">Editor Desk &rarr;</a><a href="admin.html">Admin Control &rarr;</a></div>`;
       document.querySelectorAll(".drawer-item").forEach(b => {
         b.onclick = () => { activeCat = b.dataset.cat; document.getElementById("drawer").classList.remove("open"); renderAll(); window.scrollTo({ top: 0, behavior: "smooth" }); };
       });
@@ -416,7 +456,7 @@
         ? matches.map(s => `<div class="feed-item" data-sid="${s.id}"><span class="section-kicker">${s.cat.toUpperCase()}</span><div class="feed-title" style="font-size:1.1rem;">${s.title}</div></div>`).join("")
         : `<p style="color:var(--muted); font-size:0.9rem;">No demonstration articles matched "${q}".</p>`;
       document.querySelectorAll("[data-sid]").forEach(el => {
-        el.onclick = () => { document.getElementById("search-modal").classList.remove("open"); openStory(STORIES.find(x => x.id === Number(el.dataset.sid))); };
+        el.onclick = () => { document.getElementById("search-modal").classList.remove("open"); openStory(STORIES.find(x => String(x.id) === String(el.dataset.sid))); };
       });
     }
 
@@ -427,10 +467,58 @@
     document.getElementById("close-search").onclick = () => document.getElementById("search-modal").classList.remove("open");
     document.getElementById("search-input").oninput = (e) => renderSearch(e.target.value);
     document.getElementById("close-reader").onclick = () => document.getElementById("reader-modal").classList.remove("open");
-    document.getElementById("nl-form").onsubmit = (e) => { e.preventDefault(); document.getElementById("nl-status").textContent = "Preview mode: ready for database hookup."; e.target.reset(); };
+    document.getElementById("nl-form").onsubmit = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("nl-email").value.trim();
+      const st = document.getElementById("nl-status");
+      if (typeof getPublicClient === "function" && getAnonKey()) {
+        st.textContent = "Subscribing...";
+        const res = await getPublicClient().from("subscribers").insert({ email, created_at: new Date().toISOString() });
+        st.textContent = res.error ? "Could not subscribe: " + res.error : "Subscribed to The Morning Focus.";
+      } else {
+        st.textContent = "Preview mode: add your TheBase Anon Key in Editor Desk to store signups.";
+      }
+      e.target.reset();
+    };
 
     renderMarquee();
     renderAll();
+
+    async function syncFromTheBase() {
+      if (typeof getPublicClient !== "function" || !getAnonKey()) return;
+      const client = getPublicClient();
+      const [artRes, alertRes] = await Promise.all([
+        client.from("articles").eq("status", "published").order("created_at", { ascending: false }).select(),
+        client.from("alerts").eq("is_active", true).order("created_at", { ascending: false }).select()
+      ]);
+      if (Array.isArray(artRes.data) && artRes.data.length) {
+        isLiveData = true;
+        const pill = document.querySelector('.breaking-pill'); if (pill) pill.textContent = 'BREAKING';
+        STORIES.length = 0;
+        artRes.data.forEach((a, idx) => {
+          STORIES.push({
+            id: a.id || idx + 1,
+            cat: a.section || "World",
+            title: a.title,
+            date: a.created_at ? new Date(a.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "Today",
+            author: a.author || "MUND.info Desk",
+            read: a.read_time || "3 min read",
+            img: a.image_url || "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1000&q=80",
+            summary: a.summary || "",
+            is_investigation: !!a.is_investigation,
+            body: Array.isArray(a.body) ? a.body : [String(a.body || "")]
+          });
+        });
+        renderAll();
+      }
+      if (Array.isArray(alertRes.data) && alertRes.data.length) {
+        ALERTS.length = 0;
+        alertRes.data.forEach(x => ALERTS.push(x.message));
+        renderMarquee();
+      }
+    }
+    syncFromTheBase();
+
   </script>
 </body>
 </html>
