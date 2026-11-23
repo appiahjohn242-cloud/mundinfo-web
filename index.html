@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MUND.info — The World. In Focus.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0B1320; --navy-soft: #111C2E; --white: #FFFFFF; --surface: #F8F9FA;
+      --border: #E5E7EB; --ink: #0F172A; --muted: #525D6E;
+      --gold: #B58B45; --crimson: #B91C1C;
+      --serif: "Playfair Display", Georgia, serif;
+      --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--sans); background: var(--white); color: var(--ink); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; object-fit: cover; }
+
+    /* Top Date Strip */
+    .date-strip {
+      text-align: center; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--muted); padding: 0.5rem 1rem;
+      border-bottom: 1px solid var(--border); background: var(--white);
+    }
+
+    /* Masthead */
+    .masthead {
+      position: sticky; top: 0; z-index: 40; display: flex; align-items: center;
+      justify-content: space-between; padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(8px);
+    }
+    .icon-btn {
+      background: transparent; border: none; color: var(--ink); cursor: pointer;
+      width: 36px; height: 36px; display: inline-flex; align-items: center;
+      justify-content: center; padding: 0; transition: opacity 0.15s ease;
+    }
+    .icon-btn:hover { opacity: 0.65; }
+    .icon-btn svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    .brand-center { text-align: center; cursor: pointer; }
+    .wordmark {
+      font-family: var(--serif); font-size: 1.72rem; font-weight: 700;
+      letter-spacing: -0.01em; color: var(--ink); display: inline-flex;
+      align-items: baseline; line-height: 1;
+    }
+    .wordmark em { font-style: italic; font-weight: 400; letter-spacing: 0; }
+    .diamond {
+      display: inline-block; width: 6px; height: 6px; background: var(--gold);
+      transform: rotate(45deg); margin: 0 4px; position: relative; top: -2px;
+    }
+    .brand-tag {
+      font-size: 0.6rem; letter-spacing: 0.23em; text-transform: uppercase;
+      color: var(--muted); margin-top: 0.28rem; font-weight: 500;
+    }
+
+    /* Clean Text Category Bar */
+    .cat-bar {
+      display: flex; gap: 1.35rem; overflow-x: auto; padding: 0.72rem 1.15rem;
+      border-bottom: 1px solid var(--border); scrollbar-width: none; background: var(--white);
+    }
+    .cat-bar::-webkit-scrollbar { display: none; }
+    .cat-btn {
+      background: none; border: none; font-family: var(--sans); font-size: 0.88rem;
+      font-weight: 400; color: var(--ink); cursor: pointer; white-space: nowrap;
+      padding: 0; transition: color 0.15s ease;
+    }
+    .cat-btn:hover { color: var(--gold); }
+    .cat-btn.active { color: var(--gold); font-weight: 600; }
+
+    /* Moving Breaking Ticker */
+    .breaking-row { display: flex; align-items: stretch; font-size: 0.74rem; }
+    .breaking-pill {
+      background: var(--crimson); color: var(--white); font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 0.58rem 0.85rem;
+      white-space: nowrap; display: flex; align-items: center; z-index: 2;
+    }
+    .breaking-track-wrap {
+      background: var(--navy); color: #F8FAFC; flex: 1; overflow: hidden;
+      display: flex; align-items: center;
+    }
+    .breaking-marquee {
+      display: inline-flex; white-space: nowrap; will-change: transform;
+      animation: tickerScroll 26s linear infinite; padding: 0.58rem 0; font-size: 0.82rem;
+    }
+    .breaking-track-wrap:hover .breaking-marquee { animation-play-state: paused; }
+    .ticker-item { display: inline-flex; align-items: center; gap: 0.85rem; padding-right: 2rem; }
+    .ticker-dot { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); display: inline-block; }
+    @keyframes tickerScroll { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+
+    .wrap { max-width: 780px; margin: 0 auto; padding: 1.15rem 1.15rem; }
+
+    /* Dedicated Section Header (matches /world view) */
+    .section-banner { padding: 0.5rem 0 1.25rem; border-bottom: 1px solid var(--border); margin-bottom: 1.35rem; }
+    .section-banner-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.35rem; }
+    .section-banner-title { font-family: var(--serif); font-size: 2.35rem; font-weight: 700; line-height: 1.1; color: var(--ink); margin-bottom: 0.55rem; }
+    .section-banner-desc { font-family: var(--serif); font-size: 1.08rem; color: var(--muted); line-height: 1.45; }
+
+    /* Preview Notice */
+    .preview-box {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 0.9rem 1rem; font-size: 0.84rem; color: var(--muted);
+      margin-bottom: 1.3rem; line-height: 1.48;
+    }
+    .preview-box strong { color: var(--ink); }
+
+    /* Lead & Latest */
+    .hero-img { height: 225px; margin-bottom: 0.9rem; }
+    .tag-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.45rem; }
+    .section-kicker { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: var(--gold); }
+    .demo-pill { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #D1D5DB; color: var(--muted); padding: 0.08rem 0.42rem; border-radius: 3px; }
+    .hero-headline { font-family: var(--serif); font-size: 2rem; font-weight: 700; line-height: 1.14; color: var(--ink); margin-bottom: 0.7rem; cursor: pointer; }
+    .byline { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.8rem; }
+    .byline strong { color: var(--ink); font-weight: 600; }
+
+    .latest-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+    .latest-item { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+    .latest-num { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; color: var(--gold); min-width: 1.35rem; line-height: 1.2; }
+    .latest-title { font-family: var(--serif); font-size: 1.2rem; font-weight: 700; line-height: 1.26; color: var(--ink); margin-bottom: 0.32rem; }
+    .latest-date { font-size: 0.78rem; color: var(--muted); }
+
+    /* Dark Investigations Band */
+    .inv-band { background: var(--navy); color: var(--white); padding: 1.65rem 1.15rem 2.1rem; margin-top: 1.5rem; }
+    .inv-inner { max-width: 780px; margin: 0 auto; }
+    .inv-img { height: 205px; margin-bottom: 1rem; }
+    .inv-kicker { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.6rem; }
+    .inv-headline { font-family: var(--serif); font-size: 1.95rem; font-weight: 700; line-height: 1.15; margin-bottom: 0.8rem; cursor: pointer; }
+    .inv-summary { font-size: 0.98rem; color: #CBD5E1; margin-bottom: 1.35rem; line-height: 1.52; }
+    .inv-list-item { border-top: 1px solid rgba(255,255,255,0.14); padding: 0.95rem 0; font-family: var(--serif); font-size: 1.12rem; line-height: 1.3; cursor: pointer; }
+
+    .feed-item { padding: 1.1rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+    .feed-title { font-family: var(--serif); font-size: 1.28rem; font-weight: 700; line-height: 1.26; margin: 0.3rem 0; }
+
+    /* Newsletter & Footer */
+    .newsletter-band { background: var(--navy); color: var(--white); padding: 2.25rem 1.15rem; }
+    .newsletter-inner { max-width: 780px; margin: 0 auto; }
+    .nl-kicker { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.65rem; }
+    .nl-title { font-family: var(--serif); font-size: 2rem; font-weight: 700; line-height: 1.15; margin-bottom: 0.8rem; }
+    .nl-sub { color: #CBD5E1; font-size: 0.98rem; margin-bottom: 1.3rem; }
+    .nl-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.22); color: var(--white); padding: 0.85rem 0.95rem; font-size: 0.94rem; margin-bottom: 0.75rem; outline: none; }
+    .nl-input:focus { border-color: var(--gold); }
+    .nl-btn { width: 100%; background: var(--gold); color: var(--navy); border: none; padding: 0.9rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; }
+
+    .footer-band { background: var(--navy); color: var(--white); padding: 2rem 1.15rem 2.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .footer-inner { max-width: 780px; margin: 0 auto; }
+    .footer-about { color: #CBD5E1; font-size: 0.92rem; margin: 0.8rem 0 1.5rem; max-width: 460px; }
+    .footer-rule { border-top: 1px solid rgba(255,255,255,0.12); margin-bottom: 1.5rem; }
+    .footer-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 1.25rem; }
+    .footer-head { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.92rem; color: #E2E8F0; }
+
+    /* Fullscreen Drawer & Search Overlay */
+    .drawer { display: none; position: fixed; inset: 0; background: var(--navy); color: var(--white); z-index: 100; padding: 1.1rem 1.2rem; overflow-y: auto; }
+    .drawer.open { display: block; }
+    .drawer-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+    .drawer-close { background: transparent; border: none; color: var(--white); cursor: pointer; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; }
+    .drawer-close svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+    .drawer-item { display: block; width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid rgba(255,255,255,0.12); color: var(--white); font-family: var(--serif); font-size: 1.5rem; padding: 0.95rem 0; cursor: pointer; }
+    .drawer-item.active { color: var(--gold); }
+
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(11,19,32,0.75); backdrop-filter: blur(4px); z-index: 120; padding: 1rem; overflow-y: auto; }
+    .modal-bg.open { display: block; }
+    .modal-card { max-width: 720px; margin: 1rem auto; background: var(--white); color: var(--ink); padding: 1.35rem; border-radius: 6px; }
+    .modal-body p { margin-bottom: 1rem; font-size: 1rem; line-height: 1.7; }
+    .search-input { width: 100%; border: 1px solid var(--border); padding: 0.85rem 0.95rem; font-size: 1rem; font-family: var(--sans); margin-bottom: 1rem; outline: none; }
+    .search-input:focus { border-color: var(--navy); }
+  </style>
+</head>
+<body>
+  <div class="date-strip" id="date-strip">THURSDAY, 5 NOVEMBER 2026</div>
+
+  <header class="masthead">
+    <button class="icon-btn" id="open-menu" aria-label="Open menu">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="brand-center" id="home-link">
+      <div class="wordmark">MUND<span class="diamond"></span><em>info</em></div>
+      <div class="brand-tag">THE WORLD. IN FOCUS.</div>
+    </div>
+    <button class="icon-btn" id="open-search" aria-label="Search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.2" y2="16.2"/></svg>
+    </button>
+  </header>
+
+  <nav class="cat-bar" id="cat-bar"></nav>
+
+  <div class="breaking-row">
+    <div class="breaking-pill">BREAKING &middot; DEMO</div>
+    <div class="breaking-track-wrap">
+      <div class="breaking-marquee" id="marquee-track"></div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <div id="section-header-slot"></div>
+    <div class="preview-box" id="preview-box">
+      <strong>Preview edition.</strong> All stories, names and images on this site are demonstration content for design purposes.
+    </div>
+    <section id="lead-block"></section>
+    <section style="margin-top:0.5rem;">
+      <div class="latest-label">LATEST</div>
+      <div id="latest-list"></div>
+    </section>
+  </main>
+
+  <section class="inv-band" id="inv-band"></section>
+
+  <div class="wrap">
+    <div class="latest-label">MORE DISPATCHES</div>
+    <div id="more-list"></div>
+  </div>
+
+  <section class="newsletter-band">
+    <div class="newsletter-inner">
+      <div class="nl-kicker">THE MORNING FOCUS</div>
+      <h2 class="nl-title">The world&rsquo;s essential stories, in your inbox before breakfast.</h2>
+      <p class="nl-sub">A concise daily briefing from our international desk.</p>
+      <form id="nl-form">
+        <input class="nl-input" type="email" id="nl-email" placeholder="Your email address" required />
+        <button class="nl-btn" type="submit">SUBSCRIBE</button>
+      </form>
+      <div id="nl-status" style="margin-top:0.65rem; font-size:0.85rem; color:#E2E8F0;"></div>
+    </div>
+  </section>
+
+  <footer class="footer-band">
+    <div class="footer-inner">
+      <div class="wordmark" style="color:#fff;">MUND<span class="diamond"></span><em>info</em></div>
+      <div class="brand-tag" style="color:#CBD5E1;">THE WORLD. IN FOCUS.</div>
+      <p class="footer-about">An independent international media organisation headquartered in Accra, Ghana, reporting for readers everywhere.</p>
+      <div class="footer-rule"></div>
+      <div class="footer-cols">
+        <div><div class="footer-head">SECTIONS</div><ul class="footer-links" id="f-sec-1"></ul></div>
+        <div><div class="footer-head">MORE</div><ul class="footer-links" id="f-sec-2"></ul></div>
+        <div><div class="footer-head">ORGANISATION</div><ul class="footer-links"><li><a href="#">About MUNDINFO</a></li><li><a href="#">Editorial standards</a></li><li><a href="#">Corrections</a></li><li><a href="#">Careers</a></li></ul></div>
+        <div><div class="footer-head">LEGAL</div><ul class="footer-links"><li><a href="#">Privacy</a></li><li><a href="#">Terms of use</a></li><li><a href="#">Cookies</a></li><li><a href="#">Contact</a></li></ul></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Fullscreen Menu Drawer -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-top">
+      <div class="wordmark" style="color:#fff;">MUND<span class="diamond"></span><em>info</em></div>
+      <button class="drawer-close" id="close-menu" aria-label="Close menu">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="drawer-items"></div>
+  </div>
+
+  <!-- Search Modal -->
+  <div class="modal-bg" id="search-modal">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
+        <span class="section-kicker">SEARCH MUND.INFO</span>
+        <button class="icon-btn" id="close-search" aria-label="Close search">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <input class="search-input" type="search" id="search-input" placeholder="Search headlines, sections, or topics..." />
+      <div id="search-results"></div>
+    </div>
+  </div>
+
+  <!-- Article Reader Modal -->
+  <div class="modal-bg" id="reader-modal">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
+        <span class="section-kicker" id="m-kicker"></span>
+        <button class="icon-btn" id="close-reader" aria-label="Close article">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <h2 id="m-title" style="font-family:var(--serif); font-size:1.75rem; line-height:1.2; margin-bottom:0.6rem;"></h2>
+      <div class="byline" id="m-meta"></div>
+      <img id="m-img" style="height:220px; margin-bottom:1rem;" alt="" />
+      <div class="modal-body" id="m-body"></div>
+    </div>
+  </div>
+
+  <script>
+    const SECTIONS = ["World","Politics","Business","Technology","Sports","Entertainment","Science","Lifestyle","Education","Opinion","Investigations"];
+    const SECTION_DESC = {
+      World: "International affairs, diplomacy and global developments.",
+      Politics: "Governance, elections, policy shifts and statecraft.",
+      Business: "Global markets, trade corridors, finance and enterprise.",
+      Technology: "Digital infrastructure, innovation, AI and telecoms.",
+      Sports: "International competitions, athletics and sporting culture.",
+      Entertainment: "Cinema, arts, music and global cultural movements.",
+      Science: "Climate, health, research and environmental discovery.",
+      Lifestyle: "Cities, design, travel and contemporary living.",
+      Education: "Universities, skills, literacy and learning systems.",
+      Opinion: "Editorial perspectives, essays and global commentary.",
+      Investigations: "In-depth reporting, public records and accountability."
+    };
+    const ALERTS = [
+      "Headline placeholder for live news ticker updates in production",
+      "Placeholder alert bar designed to display verified breaking updates",
+      "MUND.info Global Briefing — Accra & international desk demonstration"
+    ];
+    const STORIES = [
+      { id:1, cat:"World", title:"Demonstration headline: a major development shapes the week ahead", date:"1 November 2026", author:"Demo Correspondent", read:"3 min read", img:"https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1000&q=80", body:["Placeholder demonstration article for MUND.info layout preview.","In production, articles, authors, timestamps, and images will be served directly from your own database."] },
+      { id:2, cat:"World", title:"Placeholder report: what a shifting landscape means for the region", date:"3 November 2026", author:"Demo Correspondent", read:"4 min read", img:"https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?auto=format&fit=crop&w=1000&q=80", body:["Demonstration regional briefing entry.","Replace with live database records once your backend API is connected."] },
+      { id:3, cat:"Politics", title:"Sample story: leaders weigh options as negotiations continue", date:"3 November 2026", author:"Demo Diplomatic Desk", read:"3 min read", img:"https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=1000&q=80", body:["Demonstration policy and diplomacy briefing."] },
+      { id:4, cat:"Business", title:"Sample briefing: the key numbers to watch this month", date:"8 November 2026", author:"Demo Markets Desk", read:"2 min read", img:"https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80", body:["Demonstration markets and trade numbers overview."] },
+      { id:5, cat:"Entertainment", title:"Example feature: inside the people and places behind the headlines", date:"8 November 2026", author:"Demo Culture Desk", read:"5 min read", img:"https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1000&q=80", body:["Demonstration culture and feature story."] },
+      { id:6, cat:"Opinion", title:"Demo analysis: five questions that will define the next chapter", date:"8 November 2026", author:"Demo Columnist", read:"4 min read", img:"https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1000&q=80", body:["Demonstration analytical column."] },
+      { id:7, cat:"Sports", title:"Example feature: inside the people and places behind the headlines", date:"9 November 2026", author:"Demo Sports Desk", read:"3 min read", img:"https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1000&q=80", body:["Demonstration international sports feature."] },
+      { id:8, cat:"Investigations", title:"Demonstration headline: a major development shapes the week ahead", date:"10 November 2026", author:"Demo Investigations", read:"6 min read", img:"https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80", summary:"Placeholder summary describing how a significant story would be framed for international readers.", body:["Demonstration investigative report inside the deep navy band."] }
+    ];
+
+    let activeCat = null; // null = Front Page, string = Dedicated Section View
+
+    function renderMarquee() {
+      const doubled = [...ALERTS, ...ALERTS];
+      document.getElementById("marquee-track").innerHTML = doubled.map(txt =>
+        `<span class="ticker-item"><span>${txt}</span><span class="ticker-dot"></span></span>`
+      ).join("");
+    }
+
+    function openStory(s) {
+      document.getElementById("m-kicker").textContent = `${s.cat.toUpperCase()} · DEMO`;
+      document.getElementById("m-title").textContent = s.title;
+      document.getElementById("m-meta").innerHTML = `<strong>${s.author}</strong> · ${s.date} · ${s.read}`;
+      document.getElementById("m-img").src = s.img;
+      document.getElementById("m-body").innerHTML = s.body.map(p => `<p>${p}</p>`).join("");
+      document.getElementById("reader-modal").classList.add("open");
+    }
+
+    function renderAll() {
+      const catBar = document.getElementById("cat-bar");
+      catBar.innerHTML = SECTIONS.map(c =>
+        `<button class="cat-btn ${activeCat === c ? "active" : ""}" data-cat="${c}">${c}</button>`
+      ).join("");
+      catBar.querySelectorAll(".cat-btn").forEach(b => b.onclick = () => {
+        activeCat = b.dataset.cat;
+        renderAll();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      const slot = document.getElementById("section-header-slot");
+      const previewBox = document.getElementById("preview-box");
+      if (activeCat) {
+        previewBox.style.display = "none";
+        slot.innerHTML = `
+          <div class="section-banner">
+            <div class="section-banner-eyebrow">SECTION</div>
+            <h1 class="section-banner-title">${activeCat}</h1>
+            <p class="section-banner-desc">${SECTION_DESC[activeCat] || ""}</p>
+          </div>
+        `;
+      } else {
+        previewBox.style.display = "block";
+        slot.innerHTML = "";
+      }
+
+      const lead = activeCat ? (STORIES.find(s => s.cat === activeCat) || STORIES[0]) : STORIES[0];
+      document.getElementById("lead-block").innerHTML = `
+        <img class="hero-img" src="${lead.img}" alt="${lead.title}" />
+        <div class="tag-row"><span class="section-kicker">${lead.cat.toUpperCase()}</span><span class="demo-pill">DEMO</span></div>
+        <h2 class="hero-headline" id="lead-click">${lead.title}</h2>
+        <div class="byline"><strong>${lead.author}</strong> &middot; ${lead.date} &middot; ${lead.read}</div>
+      `;
+      document.getElementById("lead-click").onclick = () => openStory(lead);
+
+      document.getElementById("latest-list").innerHTML = STORIES.slice(1, 7).map((s, i) => `
+        <div class="latest-item" data-id="${s.id}">
+          <div class="latest-num">${i + 1}</div>
+          <div><div class="latest-title">${s.title}</div><div class="latest-date">${s.date}</div></div>
+        </div>
+      `).join("");
+      document.querySelectorAll(".latest-item").forEach(el => { el.onclick = () => openStory(STORIES.find(x => x.id === Number(el.dataset.id))); });
+
+      const inv = STORIES[7];
+      document.getElementById("inv-band").innerHTML = `
+        <div class="inv-inner">
+          <img class="inv-img" src="${inv.img}" alt="${inv.title}" />
+          <div class="inv-kicker">MUNDINFO INVESTIGATIONS &middot; DEMO</div>
+          <h2 class="inv-headline" id="inv-click">${inv.title}</h2>
+          <p class="inv-summary">${inv.summary}</p>
+          ${STORIES.slice(2, 5).map(x => `<div class="inv-list-item" data-id="${x.id}">${x.title}</div>`).join("")}
+        </div>
+      `;
+      document.getElementById("inv-click").onclick = () => openStory(inv);
+      document.querySelectorAll(".inv-list-item").forEach(el => { el.onclick = () => openStory(STORIES.find(x => x.id === Number(el.dataset.id))); });
+
+      document.getElementById("more-list").innerHTML = STORIES.slice(4, 7).map(s => `
+        <div class="feed-item" data-id="${s.id}">
+          <div class="tag-row"><span class="section-kicker">${s.cat.toUpperCase()}</span><span class="demo-pill">DEMO</span></div>
+          <div class="feed-title">${s.title}</div>
+          <div class="latest-date">${s.date}</div>
+        </div>
+      `).join("");
+      document.querySelectorAll(".feed-item").forEach(el => { el.onclick = () => openStory(STORIES.find(x => x.id === Number(el.dataset.id))); });
+
+      document.getElementById("f-sec-1").innerHTML = SECTIONS.slice(0, 6).map(s => `<li><a href="#" data-fcat="${s}">${s}</a></li>`).join("");
+      document.getElementById("f-sec-2").innerHTML = SECTIONS.slice(6).map(s => `<li><a href="#" data-fcat="${s}">${s}</a></li>`).join("");
+      document.querySelectorAll("[data-fcat]").forEach(a => { a.onclick = (e) => { e.preventDefault(); activeCat = a.dataset.fcat; renderAll(); window.scrollTo({ top: 0, behavior: "smooth" }); }; });
+
+      document.getElementById("drawer-items").innerHTML = SECTIONS.map(s =>
+        `<button class="drawer-item ${activeCat === s ? "active" : ""}" data-cat="${s}">${s}</button>`
+      ).join("");
+      document.querySelectorAll(".drawer-item").forEach(b => {
+        b.onclick = () => { activeCat = b.dataset.cat; document.getElementById("drawer").classList.remove("open"); renderAll(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+      });
+    }
+
+    function renderSearch(q) {
+      const term = (q || "").trim().toLowerCase();
+      const matches = term ? STORIES.filter(s => s.title.toLowerCase().includes(term) || s.cat.toLowerCase().includes(term)) : STORIES.slice(0, 4);
+      document.getElementById("search-results").innerHTML = matches.length
+        ? matches.map(s => `<div class="feed-item" data-sid="${s.id}"><span class="section-kicker">${s.cat.toUpperCase()}</span><div class="feed-title" style="font-size:1.1rem;">${s.title}</div></div>`).join("")
+        : `<p style="color:var(--muted); font-size:0.9rem;">No demonstration articles matched "${q}".</p>`;
+      document.querySelectorAll("[data-sid]").forEach(el => {
+        el.onclick = () => { document.getElementById("search-modal").classList.remove("open"); openStory(STORIES.find(x => x.id === Number(el.dataset.sid))); };
+      });
+    }
+
+    document.getElementById("home-link").onclick = () => { activeCat = null; renderAll(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+    document.getElementById("open-menu").onclick = () => document.getElementById("drawer").classList.add("open");
+    document.getElementById("close-menu").onclick = () => document.getElementById("drawer").classList.remove("open");
+    document.getElementById("open-search").onclick = () => { document.getElementById("search-modal").classList.add("open"); renderSearch(""); document.getElementById("search-input").focus(); };
+    document.getElementById("close-search").onclick = () => document.getElementById("search-modal").classList.remove("open");
+    document.getElementById("search-input").oninput = (e) => renderSearch(e.target.value);
+    document.getElementById("close-reader").onclick = () => document.getElementById("reader-modal").classList.remove("open");
+    document.getElementById("nl-form").onsubmit = (e) => { e.preventDefault(); document.getElementById("nl-status").textContent = "Preview mode: ready for database hookup."; e.target.reset(); };
+
+    renderMarquee();
+    renderAll();
+  </script>
+</body>
+</html>
