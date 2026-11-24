@@ -1,5 +1,5 @@
 // MUND.info <-> TheBase Client
-const THEBASE_URL = "https://thebase-pmxy.onrender.com";
+const THEBASE_URL = "https://thebase-api.appiahjohn242.workers.dev";
 const DEFAULT_ANON_KEY = "tb_anon_43023556ce3dc0b35ebcfd55";
 const KEY_STORAGE_ANON = "mundinfo_thebase_anon_key";
 const KEY_STORAGE_SERVICE = "mundinfo_thebase_service_key";
