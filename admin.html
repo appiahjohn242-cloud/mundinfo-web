@@ -171,7 +171,8 @@
     document.getElementById("init-rules-btn").onclick = async () => {
       await adm().request("/api/_meta/rules", { method: "POST", body: JSON.stringify({ table: "articles", rule: "public_read_admin_write" }) });
       await adm().request("/api/_meta/rules", { method: "POST", body: JSON.stringify({ table: "alerts", rule: "public_read_admin_write" }) });
-      await adm().request("/api/_meta/rules", { method: "POST", body: JSON.stringify({ table: "subscribers", rule: "public" }), adm().request("/api/_meta/rules", { method: "POST", body: JSON.stringify({ table: "page_views", rule: "public" }) }) });
+      await adm().request("/api/_meta/rules", { method: "POST", body: JSON.stringify({ table: "subscribers", rule: "public" }) });
+      await adm().request("/api/_meta/rules", { method: "POST", body: JSON.stringify({ table: "page_views", rule: "public" }) });
       document.getElementById("rules-msg").textContent = "Table security rules applied on TheBase.";
     };
 
