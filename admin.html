@@ -163,6 +163,7 @@
       saveKeys({ serviceKey: sk, ...(ak ? { anonKey: ak } : {}) });
       const res = await adm().request("/api/_meta/tables");
       if (res.error) { document.getElementById("gate-msg").textContent = "Access denied: " + res.error; return; }
+      if (res.data?.anonKey) saveKeys({ anonKey: res.data.anonKey });
       document.getElementById("admin-gate").style.display = "none";
       document.getElementById("admin-panel").style.display = "block";
       refreshAll();

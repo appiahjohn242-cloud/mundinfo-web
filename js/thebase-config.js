@@ -6,8 +6,9 @@ const KEY_STORAGE_SERVICE = "mundinfo_thebase_service_key";
 const SESSION_KEY = "thebase_session_token";
 
 function getAnonKey() {
-  const k = (DEFAULT_ANON_KEY && !DEFAULT_ANON_KEY.includes("YOUR_ANON_KEY_HERE")) ? DEFAULT_ANON_KEY : "";
-  return k || localStorage.getItem(KEY_STORAGE_ANON) || "";
+  const saved = localStorage.getItem(KEY_STORAGE_ANON) || "";
+  if (saved) return saved;
+  return (DEFAULT_ANON_KEY && !DEFAULT_ANON_KEY.includes("YOUR_ANON_KEY_HERE")) ? DEFAULT_ANON_KEY : "";
 }
 function getServiceKey() {
   return localStorage.getItem(KEY_STORAGE_SERVICE) || "";
