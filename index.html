@@ -59,12 +59,12 @@
 
     /* Clean Text Category Bar */
     .cat-bar {
-      display: flex; gap: 1.35rem; overflow-x: auto; padding: 0.72rem 1.15rem;
-      border-bottom: 1px solid var(--border); scrollbar-width: none; background: var(--white);
+      display: flex; gap: 1.15rem; overflow-x: auto; padding: 0.68rem 1.1rem;
+      border-bottom: 1px solid #CBD5E1; scrollbar-width: none; background: var(--white);
     }
     .cat-bar::-webkit-scrollbar { display: none; }
     .cat-btn {
-      background: none; border: none; font-family: var(--sans); font-size: 0.88rem;
+      background: none; border: none; font-family: var(--sans); font-size: 0.84rem;
       font-weight: 400; color: var(--ink); cursor: pointer; white-space: nowrap;
       padding: 0; transition: color 0.15s ease;
     }
@@ -169,7 +169,8 @@
     .search-input:focus { border-color: var(--navy); }
   
     .date-strip { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 1.25rem; }
-    .masthead { max-width: 1180px; margin: 0 auto; padding: 1.15rem 1.25rem; }
+    .masthead { width: 100%; padding: 0.82rem 1.15rem; }
+    .masthead > * { max-width: 1180px; }
     .mast-right { display: flex; align-items: center; gap: 0.65rem; }
     .nl-top-btn { background: var(--navy); color: #fff; border: none; padding: 0.48rem 0.85rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
     .nl-top-btn:hover { background: var(--gold); color: var(--navy); }
