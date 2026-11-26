@@ -59,9 +59,11 @@
 
     /* Clean Text Category Bar */
     .cat-bar {
-      display: flex; gap: 1.15rem; overflow-x: auto; padding: 0.68rem 1.1rem;
-      border-bottom: 1px solid #CBD5E1; scrollbar-width: none; background: var(--white);
+      display: flex; gap: 1.15rem; overflow-x: auto; padding: 0.68rem 1.1rem 0.58rem;
+      scrollbar-width: none; background: var(--white);
     }
+    .cat-rule-wrap { background: var(--white); padding: 0 1.1rem 0.42rem; }
+    .cat-rule { height: 1px; background: #CBD5E1; width: 88%; }
     .cat-bar::-webkit-scrollbar { display: none; }
     .cat-btn {
       background: none; border: none; font-family: var(--sans); font-size: 0.84rem;
@@ -214,6 +216,7 @@
   </header>
 
   <nav class="cat-bar" id="cat-bar"></nav>
+  <div class="cat-rule-wrap"><div class="cat-rule"></div></div>
 
   <div class="breaking-row">
     <div class="breaking-pill">BREAKING &middot; DEMO</div>
