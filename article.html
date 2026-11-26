@@ -31,5 +31,13 @@
   </footer>
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
+<script>
+  try {
+    if (!sessionStorage.getItem("mund_v_article") && typeof getPublicClient === "function") {
+      sessionStorage.setItem("mund_v_article", "1");
+      getPublicClient().from("page_views").insert({ page: "article", created_at: new Date().toISOString() });
+    }
+  } catch (e) {}
+</script>
 </body>
 </html>

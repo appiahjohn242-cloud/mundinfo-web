@@ -443,7 +443,6 @@
       document.getElementById("drawer-items").innerHTML = SECTIONS.map(s =>
         `<button class="drawer-item ${activeCat === s ? "active" : ""}" data-cat="${s}">${s}</button>`
       ).join("");
-      document.getElementById("drawer-items").innerHTML += `<div style="margin-top:1.5rem; display:flex; gap:1rem; font-size:0.85rem; color:#B58B45;"><a href="editor.html">Editor Desk &rarr;</a><a href="admin.html">Admin Control &rarr;</a></div>`;
       document.querySelectorAll(".drawer-item").forEach(b => {
         b.onclick = () => { activeCat = b.dataset.cat; document.getElementById("drawer").classList.remove("open"); renderAll(); window.scrollTo({ top: 0, behavior: "smooth" }); };
       });
@@ -520,5 +519,13 @@
     syncFromTheBase();
 
   </script>
+<script>
+  try {
+    if (!sessionStorage.getItem("mund_v_home") && typeof getPublicClient === "function") {
+      sessionStorage.setItem("mund_v_home", "1");
+      getPublicClient().from("page_views").insert({ page: "home", created_at: new Date().toISOString() });
+    }
+  } catch (e) {}
+</script>
 </body>
 </html>
